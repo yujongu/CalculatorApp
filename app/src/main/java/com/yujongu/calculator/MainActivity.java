@@ -5,9 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
     Button unitBtn, backspaceBtn, clearBtn, caretBtn,
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     TextView TvEquation, TvAnswer;
 
     private boolean hasDecimal = false;
+    final String[] operands = {"+", "-", "*", "/", "^", "%"};
 
 
     public boolean endsWithOperand(String str){
@@ -39,6 +41,16 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    public int getMaxOperInd(String str){
+        int max = 0;
+        for (int i = 0; i < operands.length; i++){
+            if (str.lastIndexOf(operands[i]) > max){
+                max = str.lastIndexOf(operands[i]);
+            }
+        }
+        return max;
     }
 
 
@@ -83,10 +95,12 @@ public class MainActivity extends AppCompatActivity {
         TvEquation = findViewById(R.id.equationTv);
         TvAnswer = findViewById(R.id.answerTv);
 
+
         clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 TvEquation.setText("");
+                hasDecimal = false;
             }
         });
         backspaceBtn.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +108,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String eq = TvEquation.getText().toString();
                 if (eq.length() != 0){
+                    if (eq.substring(eq.length() - 1).equals(".")){
+                        hasDecimal = false;
+                    } else if (endsWithOperand(eq) && eq.lastIndexOf(".") > getMaxOperInd(eq.substring(0, eq.length() - 1))){
+                        hasDecimal = true;
+                    }
                     TvEquation.setText(eq.substring(0, eq.length() - 1));
                 }
             }
@@ -232,30 +251,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
         pointBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String eq = TvEquation.getText().toString();
-                if (eq.equals("")){
-                    TvEquation.setText("0.");
+                if (eq.equals("") || endsWithOperand(eq)){
+                    TvEquation.setText(eq + "0.");
+                    hasDecimal = true;
                 } else if (hasDecimal == false){
                     TvEquation.setText(eq + ".");
-                }
-
-
-                else if (eq.lastIndexOf(".") > eq.lastIndexOf("+")
-                        || eq.lastIndexOf(".") > eq.lastIndexOf("-")
-                        || eq.lastIndexOf(".") > eq.lastIndexOf("*")
-                        || eq.lastIndexOf(".") > eq.lastIndexOf("/")
-                        || eq.lastIndexOf(".") > eq.lastIndexOf("^")
-                        || eq.lastIndexOf(".") > eq.lastIndexOf("%")){
-                    //do Nothing
-                    Toast.makeText(MainActivity.this, "do nothing", Toast.LENGTH_SHORT).show();
-                } else if (eq.length() != 0 &&
-                        eq.substring(eq.length() - 1).equals("*")){
-                    TvEquation.setText(eq + "0.");
-                } else {
-                    TvEquation.setText(eq + ".");
+                    hasDecimal = true;
                 }
             }
         });
@@ -267,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
                 String eq = TvEquation.getText().toString();
                 if (!eq.equals("") && !endsWithOperand(eq)){
                     TvEquation.setText(eq + "+");
+                    hasDecimal = false;
                 }
             }
         });
@@ -276,6 +284,7 @@ public class MainActivity extends AppCompatActivity {
                 String eq = TvEquation.getText().toString();
                 if (!eq.equals("") && !endsWithOperand(eq)){
                     TvEquation.setText(eq + "-");
+                    hasDecimal = false;
                 }
             }
         });
@@ -285,6 +294,7 @@ public class MainActivity extends AppCompatActivity {
                 String eq = TvEquation.getText().toString();
                 if (!eq.equals("") && !endsWithOperand(eq)){
                     TvEquation.setText(eq + "*");
+                    hasDecimal = false;
                 }
             }
         });
@@ -294,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
                 String eq = TvEquation.getText().toString();
                 if (!eq.equals("") && !endsWithOperand(eq)){
                     TvEquation.setText(eq + "/");
+                    hasDecimal = false;
                 }
             }
         });
@@ -303,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
                 String eq = TvEquation.getText().toString();
                 if (!eq.equals("") && !endsWithOperand(eq)){
                     TvEquation.setText(eq + "^");
+                    hasDecimal = false;
                 }
             }
         });
@@ -312,11 +324,22 @@ public class MainActivity extends AppCompatActivity {
                 String eq = TvEquation.getText().toString();
                 if (!eq.equals("") && !endsWithOperand(eq)){
                     TvEquation.setText(eq + "%");
+                    hasDecimal = false;
                 }
             }
         });
+
+        equalsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Stack<Integer> operand = new Stack();
+                Stack<Integer> operator = new Stack();
+
+                String eq = TvEquation.getText().toString();
+
+            }
+        });
+
+
     }
-
-
-
 }
