@@ -20,6 +20,26 @@ public class MainActivity extends AppCompatActivity {
 
     TextView TvEquation, TvAnswer;
 
+    private boolean hasDecimal = false;
+
+
+    public boolean endsWithOperand(String str){
+        if (str.endsWith("+") || str.endsWith("-")
+                || str.endsWith("*") || str.endsWith("/")
+                || str.endsWith("^") || str.endsWith("%")){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean endsWithOperZero(String str){
+        if (str.endsWith("+0") || str.endsWith("-0")
+                || str.endsWith("*0") || str.endsWith("/0")
+                || str.endsWith("^0") || str.endsWith("%0")){
+            return true;
+        }
+        return false;
+    }
 
 
     @Override
@@ -72,8 +92,9 @@ public class MainActivity extends AppCompatActivity {
         backspaceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TvEquation.getText().toString().length() != 0){
-                    TvEquation.setText(TvEquation.getText().toString().substring(0, TvEquation.getText().toString().length() - 1));
+                String eq = TvEquation.getText().toString();
+                if (eq.length() != 0){
+                    TvEquation.setText(eq.substring(0, eq.length() - 1));
                 }
             }
         });
@@ -81,19 +102,15 @@ public class MainActivity extends AppCompatActivity {
         zeroBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TvEquation.getText().toString().equals("")){
+                String eq = TvEquation.getText().toString();
+                if (eq.equals("")){
                     TvEquation.setText("0");
-                } else if (TvEquation.getText().toString().equals("0")){
+                } else if (eq.equals("0")){
                     //do Nothing
-                } else if (TvEquation.getText().toString().endsWith("+0")
-                        || TvEquation.getText().toString().endsWith("-0")
-                        || TvEquation.getText().toString().endsWith("*0")
-                        || TvEquation.getText().toString().endsWith("/0")
-                        || TvEquation.getText().toString().endsWith("^0")
-                        || TvEquation.getText().toString().endsWith("%0") ){
+                } else if (endsWithOperZero(eq)){
                     //do Nothing
                 } else {
-                    TvEquation.setText(TvEquation.getText().toString() + "0");
+                    TvEquation.setText(eq + "0");
                 }
             }
         });
@@ -101,174 +118,144 @@ public class MainActivity extends AppCompatActivity {
         oneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TvEquation.getText().toString().equals("0")){
+                String eq = TvEquation.getText().toString();
+                if (eq.equals("0")){
                     TvEquation.setText("1");
-                } else if (TvEquation.getText().toString().endsWith("+0")
-                        || TvEquation.getText().toString().endsWith("-0")
-                        || TvEquation.getText().toString().endsWith("*0")
-                        || TvEquation.getText().toString().endsWith("/0")
-                        || TvEquation.getText().toString().endsWith("^0")
-                        || TvEquation.getText().toString().endsWith("%0")){
-                    TvEquation.setText(TvEquation.getText().toString().substring(0, TvEquation.getText().toString().lastIndexOf("0")) + "1");
+                } else if (endsWithOperZero(eq)){
+                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "1");
                 } else {
-                    TvEquation.setText(TvEquation.getText().toString() + "1");
+                    TvEquation.setText(eq + "1");
                 }
             }
         });
         twoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TvEquation.getText().toString().equals("0")){
+                String eq = TvEquation.getText().toString();
+                if (eq.equals("0")){
                     TvEquation.setText("2");
-                } else if (TvEquation.getText().toString().endsWith("+0")
-                        || TvEquation.getText().toString().endsWith("-0")
-                        || TvEquation.getText().toString().endsWith("*0")
-                        || TvEquation.getText().toString().endsWith("/0")
-                        || TvEquation.getText().toString().endsWith("^0")
-                        || TvEquation.getText().toString().endsWith("%0")){
-                    TvEquation.setText(TvEquation.getText().toString().substring(0, TvEquation.getText().toString().lastIndexOf("0")) + "2");
+                } else if (endsWithOperZero(eq)){
+                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "2");
                 } else {
-                    TvEquation.setText(TvEquation.getText().toString() + "2");
+                    TvEquation.setText(eq + "2");
                 }
             }
         });
         threeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TvEquation.getText().toString().equals("0")){
+                String eq = TvEquation.getText().toString();
+                if (eq.equals("0")){
                     TvEquation.setText("3");
-                } else if (TvEquation.getText().toString().endsWith("+0")
-                        || TvEquation.getText().toString().endsWith("-0")
-                        || TvEquation.getText().toString().endsWith("*0")
-                        || TvEquation.getText().toString().endsWith("/0")
-                        || TvEquation.getText().toString().endsWith("^0")
-                        || TvEquation.getText().toString().endsWith("%0")){
-                    TvEquation.setText(TvEquation.getText().toString().substring(0, TvEquation.getText().toString().lastIndexOf("0")) + "3");
+                } else if (endsWithOperZero(eq)){
+                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "3");
                 } else {
-                    TvEquation.setText(TvEquation.getText().toString() + "3");
+                    TvEquation.setText(eq + "3");
                 }
             }
         });
         fourBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TvEquation.getText().toString().equals("0")){
+                String eq = TvEquation.getText().toString();
+                if (eq.equals("0")){
                     TvEquation.setText("4");
-                } else if (TvEquation.getText().toString().endsWith("+0")
-                        || TvEquation.getText().toString().endsWith("-0")
-                        || TvEquation.getText().toString().endsWith("*0")
-                        || TvEquation.getText().toString().endsWith("/0")
-                        || TvEquation.getText().toString().endsWith("^0")
-                        || TvEquation.getText().toString().endsWith("%0")){
-                    TvEquation.setText(TvEquation.getText().toString().substring(0, TvEquation.getText().toString().lastIndexOf("0")) + "4");
+                } else if (endsWithOperZero(eq)){
+                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "4");
                 } else {
-                    TvEquation.setText(TvEquation.getText().toString() + "4");
+                    TvEquation.setText(eq + "4");
                 }
             }
         });
         fiveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TvEquation.getText().toString().equals("0")){
+                String eq = TvEquation.getText().toString();
+                if (eq.equals("0")){
                     TvEquation.setText("5");
-                } else if (TvEquation.getText().toString().endsWith("+0")
-                        || TvEquation.getText().toString().endsWith("-0")
-                        || TvEquation.getText().toString().endsWith("*0")
-                        || TvEquation.getText().toString().endsWith("/0")
-                        || TvEquation.getText().toString().endsWith("^0")
-                        || TvEquation.getText().toString().endsWith("%0")){
-                    TvEquation.setText(TvEquation.getText().toString().substring(0, TvEquation.getText().toString().lastIndexOf("0")) + "5");
+                } else if (endsWithOperZero(eq)){
+                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "5");
                 } else {
-                    TvEquation.setText(TvEquation.getText().toString() + "5");
+                    TvEquation.setText(eq + "5");
                 }
             }
         });
         sixBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TvEquation.getText().toString().equals("0")){
+                String eq = TvEquation.getText().toString();
+                if (eq.equals("0")){
                     TvEquation.setText("6");
-                } else if (TvEquation.getText().toString().endsWith("+0")
-                        || TvEquation.getText().toString().endsWith("-0")
-                        || TvEquation.getText().toString().endsWith("*0")
-                        || TvEquation.getText().toString().endsWith("/0")
-                        || TvEquation.getText().toString().endsWith("^0")
-                        || TvEquation.getText().toString().endsWith("%0")){
-                    TvEquation.setText(TvEquation.getText().toString().substring(0, TvEquation.getText().toString().lastIndexOf("0")) + "6");
+                } else if (endsWithOperZero(eq)){
+                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "6");
                 } else {
-                    TvEquation.setText(TvEquation.getText().toString() + "6");
+                    TvEquation.setText(eq + "6");
                 }
             }
         });
         sevenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TvEquation.getText().toString().equals("0")){
+                String eq = TvEquation.getText().toString();
+                if (eq.equals("0")){
                     TvEquation.setText("7");
-                } else if (TvEquation.getText().toString().endsWith("+0")
-                        || TvEquation.getText().toString().endsWith("-0")
-                        || TvEquation.getText().toString().endsWith("*0")
-                        || TvEquation.getText().toString().endsWith("/0")
-                        || TvEquation.getText().toString().endsWith("^0")
-                        || TvEquation.getText().toString().endsWith("%0")){
-                    TvEquation.setText(TvEquation.getText().toString().substring(0, TvEquation.getText().toString().lastIndexOf("0")) + "7");
+                } else if (endsWithOperZero(eq)){
+                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "7");
                 } else {
-                    TvEquation.setText(TvEquation.getText().toString() + "7");
+                    TvEquation.setText(eq + "7");
                 }
             }
         });
         eightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TvEquation.getText().toString().equals("0")){
+                String eq = TvEquation.getText().toString();
+                if (eq.equals("0")){
                     TvEquation.setText("8");
-                } else if (TvEquation.getText().toString().endsWith("+0")
-                        || TvEquation.getText().toString().endsWith("-0")
-                        || TvEquation.getText().toString().endsWith("*0")
-                        || TvEquation.getText().toString().endsWith("/0")
-                        || TvEquation.getText().toString().endsWith("^0")
-                        || TvEquation.getText().toString().endsWith("%0")){
-                    TvEquation.setText(TvEquation.getText().toString().substring(0, TvEquation.getText().toString().lastIndexOf("0")) + "8");
+                } else if (endsWithOperZero(eq)){
+                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "8");
                 } else {
-                    TvEquation.setText(TvEquation.getText().toString() + "8");
+                    TvEquation.setText(eq + "8");
                 }
             }
         });
         nineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TvEquation.getText().toString().equals("0")){
+                String eq = TvEquation.getText().toString();
+                if (eq.equals("0")){
                     TvEquation.setText("9");
-                } else if (TvEquation.getText().toString().endsWith("+0")
-                        || TvEquation.getText().toString().endsWith("-0")
-                        || TvEquation.getText().toString().endsWith("*0")
-                        || TvEquation.getText().toString().endsWith("/0")
-                        || TvEquation.getText().toString().endsWith("^0")
-                        || TvEquation.getText().toString().endsWith("%0")){
-                    TvEquation.setText(TvEquation.getText().toString().substring(0, TvEquation.getText().toString().lastIndexOf("0")) + "9");
+                } else if (endsWithOperZero(eq)){
+                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "9");
                 } else {
-                    TvEquation.setText(TvEquation.getText().toString() + "9");
+                    TvEquation.setText(eq + "9");
                 }
             }
         });
         pointBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TvEquation.getText().toString().equals("")){
+                String eq = TvEquation.getText().toString();
+                if (eq.equals("")){
                     TvEquation.setText("0.");
-                } else if (TvEquation.getText().toString().lastIndexOf(".") > TvEquation.getText().toString().lastIndexOf("+")
-                        || TvEquation.getText().toString().lastIndexOf(".") > TvEquation.getText().toString().lastIndexOf("-")
-                        || TvEquation.getText().toString().lastIndexOf(".") > TvEquation.getText().toString().lastIndexOf("*")
-                        || TvEquation.getText().toString().lastIndexOf(".") > TvEquation.getText().toString().lastIndexOf("/")
-                        || TvEquation.getText().toString().lastIndexOf(".") > TvEquation.getText().toString().lastIndexOf("^")
-                        || TvEquation.getText().toString().lastIndexOf(".") > TvEquation.getText().toString().lastIndexOf("%")){
+                } else if (hasDecimal == false){
+                    TvEquation.setText(eq + ".");
+                }
+
+
+                else if (eq.lastIndexOf(".") > eq.lastIndexOf("+")
+                        || eq.lastIndexOf(".") > eq.lastIndexOf("-")
+                        || eq.lastIndexOf(".") > eq.lastIndexOf("*")
+                        || eq.lastIndexOf(".") > eq.lastIndexOf("/")
+                        || eq.lastIndexOf(".") > eq.lastIndexOf("^")
+                        || eq.lastIndexOf(".") > eq.lastIndexOf("%")){
                     //do Nothing
                     Toast.makeText(MainActivity.this, "do nothing", Toast.LENGTH_SHORT).show();
-                } else if (TvEquation.getText().toString().length() != 0 &&
-                        TvEquation.getText().toString().substring(TvEquation.getText().toString().length() - 1).equals("*")){
-                    TvEquation.setText(TvEquation.getText().toString() + "0.");
+                } else if (eq.length() != 0 &&
+                        eq.substring(eq.length() - 1).equals("*")){
+                    TvEquation.setText(eq + "0.");
                 } else {
-                    TvEquation.setText(TvEquation.getText().toString() + ".");
+                    TvEquation.setText(eq + ".");
                 }
             }
         });
@@ -278,11 +265,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String eq = TvEquation.getText().toString();
-                if (!eq.equals("")
-                        && !eq.endsWith("+") && !eq.endsWith("-")
-                        && !eq.endsWith("*") && !eq.endsWith("/")
-                        && !eq.endsWith("^") && !eq.endsWith("%")){
-                    TvEquation.setText(TvEquation.getText().toString() + "+");
+                if (!eq.equals("") && !endsWithOperand(eq)){
+                    TvEquation.setText(eq + "+");
                 }
             }
         });
@@ -290,8 +274,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String eq = TvEquation.getText().toString();
-                if (!eq.equals("") && !eq.endsWith("+") && !eq.endsWith("-") && !eq.endsWith("*") && !eq.endsWith("/") && !eq.endsWith("^") && !eq.endsWith("%")){
-                    TvEquation.setText(TvEquation.getText().toString() + "-");
+                if (!eq.equals("") && !endsWithOperand(eq)){
+                    TvEquation.setText(eq + "-");
                 }
             }
         });
@@ -299,10 +283,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String eq = TvEquation.getText().toString();
-                if (!eq.equals("") && !eq.endsWith("+") && !eq.endsWith("-")
-                        && !eq.endsWith("*") && !eq.endsWith("/")
-                        && !eq.endsWith("^") && !eq.endsWith("%")){
-                    TvEquation.setText(TvEquation.getText().toString() + "*");
+                if (!eq.equals("") && !endsWithOperand(eq)){
+                    TvEquation.setText(eq + "*");
                 }
             }
         });
@@ -310,10 +292,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String eq = TvEquation.getText().toString();
-                if (!eq.equals("") && !eq.endsWith("+") && !eq.endsWith("-")
-                        && !eq.endsWith("*") && !eq.endsWith("/")
-                        && !eq.endsWith("^") && !eq.endsWith("%")){
-                    TvEquation.setText(TvEquation.getText().toString() + "/");
+                if (!eq.equals("") && !endsWithOperand(eq)){
+                    TvEquation.setText(eq + "/");
                 }
             }
         });
@@ -321,10 +301,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String eq = TvEquation.getText().toString();
-                if (!eq.equals("") && !eq.endsWith("+") && !eq.endsWith("-")
-                        && !eq.endsWith("*") && !eq.endsWith("/")
-                        && !eq.endsWith("^") && !eq.endsWith("%")){
-                    TvEquation.setText(TvEquation.getText().toString() + "^");
+                if (!eq.equals("") && !endsWithOperand(eq)){
+                    TvEquation.setText(eq + "^");
                 }
             }
         });
@@ -332,20 +310,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String eq = TvEquation.getText().toString();
-                if (!eq.equals("") && !eq.endsWith("+") && !eq.endsWith("-")
-                        && !eq.endsWith("*") && !eq.endsWith("/")
-                        && !eq.endsWith("^") && !eq.endsWith("%")){
-                    TvEquation.setText(TvEquation.getText().toString() + "%");
+                if (!eq.equals("") && !endsWithOperand(eq)){
+                    TvEquation.setText(eq + "%");
                 }
             }
         });
-
-
-
-
-
-
-
     }
+
+
 
 }
