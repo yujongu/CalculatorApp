@@ -8,19 +8,21 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
     Button unitBtn, backspaceBtn, clearBtn, caretBtn,
-            percentBtn, divideBtn, multiplyBtn, subtractBtn,
-            addBtn, equalsBtn, pointBtn, invertBtn;
+            divideBtn, multiplyBtn, subtractBtn,
+            addBtn, equalsBtn, pointBtn;
 
     Button zeroBtn, oneBtn, twoBtn, threeBtn,
             fourBtn, fiveBtn, sixBtn, sevenBtn,
             eightBtn, nineBtn;
 
-    TextView TvEquation, TvAnswer;
+    TextView EtEquation;
+    TextView TvAnswer;
 
     private boolean hasDecimal = false;
     final String[] operands = {"+", "-", "*", "/", "^", "%"};
@@ -46,18 +48,21 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    public double compute(double a, double b, String oper){
-        double ans = 0;
+    public BigDecimal compute(BigDecimal a, BigDecimal b, String oper){
+        BigDecimal ans = new BigDecimal(0);
         if (oper.equals("+")){
-            ans = a + b;
+            ans = a.add(b);
         } else if (oper.equals("-")){
-            ans = a - b;
+            ans = a.subtract(b);
         } else if (oper.equals("*")){
-            ans = a * b;
+            ans = a.multiply(b);
         } else if (oper.equals("/")){
-            ans = a / b;
+            ans = a.divide(b, MathContext.DECIMAL64);
         } else if (oper.equals("^")){
-            ans = (int) Math.pow(a, b);
+            ans = BigDecimal.valueOf(1);
+            for (int i = 0; i < Integer.valueOf(String.valueOf(b)); i++){
+                ans = ans.multiply(a);
+            }
         }
         return ans;
     }
@@ -91,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
         return max;
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,14 +114,12 @@ public class MainActivity extends AppCompatActivity {
         backspaceBtn = findViewById(R.id.backSpace);
         clearBtn = findViewById(R.id.clear);
         caretBtn = findViewById(R.id.caret);
-        percentBtn = findViewById(R.id.percent);
         divideBtn = findViewById(R.id.divide);
         multiplyBtn = findViewById(R.id.multiply);
         subtractBtn = findViewById(R.id.subtract);
         addBtn = findViewById(R.id.add);
         equalsBtn = findViewById(R.id.equals);
         pointBtn = findViewById(R.id.point);
-        invertBtn = findViewById(R.id.invert);
 
         zeroBtn = findViewById(R.id.zero);
         oneBtn = findViewById(R.id.one);
@@ -130,28 +132,30 @@ public class MainActivity extends AppCompatActivity {
         eightBtn = findViewById(R.id.eight);
         nineBtn = findViewById(R.id.nine);
 
-        TvEquation = findViewById(R.id.equationTv);
+        EtEquation = findViewById(R.id.equationEt);
         TvAnswer = findViewById(R.id.answerTv);
 
 
         clearBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TvEquation.setText("");
+                EtEquation.setText("");
                 hasDecimal = false;
+                TvAnswer.setText("");
             }
         });
         backspaceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (eq.length() != 0){
                     if (eq.substring(eq.length() - 1).equals(".")){
                         hasDecimal = false;
                     } else if (endsWithOperand(eq) && eq.lastIndexOf(".") > getMaxOperInd(eq.substring(0, eq.length() - 1))){
                         hasDecimal = true;
                     }
-                    TvEquation.setText(eq.substring(0, eq.length() - 1));
+                    EtEquation.setText(eq.substring(0, eq.length() - 1));
+//                    EtEquation.setSelection(EtEquation.getText().length());
                 }
             }
         });
@@ -159,15 +163,15 @@ public class MainActivity extends AppCompatActivity {
         zeroBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (eq.equals("")){
-                    TvEquation.setText("0");
+                    EtEquation.append("0");
                 } else if (eq.equals("0")){
                     //do Nothing
                 } else if (endsWithOperZero(eq)){
                     //do Nothing
                 } else {
-                    TvEquation.setText(eq + "0");
+                    EtEquation.append("0");
                 }
             }
         });
@@ -175,117 +179,126 @@ public class MainActivity extends AppCompatActivity {
         oneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (eq.equals("0")){
-                    TvEquation.setText("1");
+                    EtEquation.setText("");
+                    EtEquation.append("1");
                 } else if (endsWithOperZero(eq)){
-                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "1");
+                    EtEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "1");
                 } else {
-                    TvEquation.setText(eq + "1");
+                    EtEquation.append("1");
                 }
             }
         });
         twoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (eq.equals("0")){
-                    TvEquation.setText("2");
+                    EtEquation.setText("");
+                    EtEquation.append("2");
                 } else if (endsWithOperZero(eq)){
-                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "2");
+                    EtEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "2");
                 } else {
-                    TvEquation.setText(eq + "2");
+                    EtEquation.append("2");
                 }
             }
         });
         threeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (eq.equals("0")){
-                    TvEquation.setText("3");
+                    EtEquation.setText("");
+                    EtEquation.append("3");
                 } else if (endsWithOperZero(eq)){
-                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "3");
+                    EtEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "3");
                 } else {
-                    TvEquation.setText(eq + "3");
+                    EtEquation.append("3");
                 }
             }
         });
         fourBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (eq.equals("0")){
-                    TvEquation.setText("4");
+                    EtEquation.setText("");
+                    EtEquation.append("4");
                 } else if (endsWithOperZero(eq)){
-                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "4");
+                    EtEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "4");
                 } else {
-                    TvEquation.setText(eq + "4");
+                    EtEquation.append("4");
                 }
             }
         });
         fiveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (eq.equals("0")){
-                    TvEquation.setText("5");
+                    EtEquation.setText("");
+                    EtEquation.append("5");
                 } else if (endsWithOperZero(eq)){
-                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "5");
+                    EtEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "5");
                 } else {
-                    TvEquation.setText(eq + "5");
+                    EtEquation.append("5");
                 }
             }
         });
         sixBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (eq.equals("0")){
-                    TvEquation.setText("6");
+                    EtEquation.setText("");
+                    EtEquation.append("6");
                 } else if (endsWithOperZero(eq)){
-                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "6");
+                    EtEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "6");
                 } else {
-                    TvEquation.setText(eq + "6");
+                    EtEquation.append("6");
                 }
             }
         });
         sevenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (eq.equals("0")){
-                    TvEquation.setText("7");
+                    EtEquation.setText("");
+                    EtEquation.append("7");
                 } else if (endsWithOperZero(eq)){
-                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "7");
+                    EtEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "7");
                 } else {
-                    TvEquation.setText(eq + "7");
+                    EtEquation.append("7");
                 }
             }
         });
         eightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (eq.equals("0")){
-                    TvEquation.setText("8");
+                    EtEquation.setText("");
+                    EtEquation.append("8");
                 } else if (endsWithOperZero(eq)){
-                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "8");
+                    EtEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "8");
                 } else {
-                    TvEquation.setText(eq + "8");
+                    EtEquation.append("8");
                 }
             }
         });
         nineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (eq.equals("0")){
-                    TvEquation.setText("9");
+                    EtEquation.setText("");
+                    EtEquation.append("9");
                 } else if (endsWithOperZero(eq)){
-                    TvEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "9");
+                    EtEquation.setText(eq.substring(0, eq.lastIndexOf("0")) + "9");
                 } else {
-                    TvEquation.setText(eq + "9");
+                    EtEquation.append("9");
                 }
             }
         });
@@ -294,12 +307,12 @@ public class MainActivity extends AppCompatActivity {
         pointBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (eq.equals("") || endsWithOperand(eq)){
-                    TvEquation.setText(eq + "0.");
+                    EtEquation.append("0.");
                     hasDecimal = true;
                 } else if (hasDecimal == false){
-                    TvEquation.setText(eq + ".");
+                    EtEquation.append(".");
                     hasDecimal = true;
                 }
             }
@@ -309,9 +322,9 @@ public class MainActivity extends AppCompatActivity {
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (!eq.equals("") && !endsWithOperand(eq)){
-                    TvEquation.setText(eq + "+");
+                    EtEquation.append("+");
                     hasDecimal = false;
                 }
             }
@@ -319,9 +332,9 @@ public class MainActivity extends AppCompatActivity {
         subtractBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (!eq.equals("") && !endsWithOperand(eq)){
-                    TvEquation.setText(eq + "-");
+                    EtEquation.append("-");
                     hasDecimal = false;
                 }
             }
@@ -329,9 +342,9 @@ public class MainActivity extends AppCompatActivity {
         multiplyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (!eq.equals("") && !endsWithOperand(eq)){
-                    TvEquation.setText(eq + "*");
+                    EtEquation.append("*");
                     hasDecimal = false;
                 }
             }
@@ -339,9 +352,9 @@ public class MainActivity extends AppCompatActivity {
         divideBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (!eq.equals("") && !endsWithOperand(eq)){
-                    TvEquation.setText(eq + "/");
+                    EtEquation.append("/");
                     hasDecimal = false;
                 }
             }
@@ -349,19 +362,9 @@ public class MainActivity extends AppCompatActivity {
         caretBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
                 if (!eq.equals("") && !endsWithOperand(eq)){
-                    TvEquation.setText(eq + "^");
-                    hasDecimal = false;
-                }
-            }
-        });
-        percentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
-                if (!eq.equals("") && !endsWithOperand(eq)){
-                    TvEquation.setText(eq + "%");
+                    EtEquation.append("^");
                     hasDecimal = false;
                 }
             }
@@ -370,13 +373,13 @@ public class MainActivity extends AppCompatActivity {
         equalsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eq = TvEquation.getText().toString();
+                String eq = EtEquation.getText().toString();
 
                 if (endsWithOperand(eq)) {
                     Toast.makeText(MainActivity.this, "The equation is incomplete", Toast.LENGTH_SHORT).show();
                 } else {
                     Stack<String> operand = new Stack();
-                    Stack<Double> operator = new Stack();
+                    Stack<BigDecimal> operator = new Stack();
 
                     String[] arr = new String[eq.length()];
                     arr = eq.split("");
@@ -387,40 +390,39 @@ public class MainActivity extends AppCompatActivity {
                         for (int i = 1; i < arr.length; i++){
 
                             if (isNumber(arr[i])){
-                                double num = 0;
+                                BigDecimal num = new BigDecimal(0);
                                 while (i < arr.length && isNumber(arr[i])){
-                                    num = (num * 10) + Integer.valueOf(arr[i]);
+                                    num = (num.multiply(BigDecimal.valueOf(10)));
+                                    num = num.add(BigDecimal.valueOf(Integer.valueOf(arr[i])));
                                     i++;
                                 }
                                 i--;
                                 operator.push(num);
                                 System.out.println("num: " + num);
                             } else if (arr[i].equals(".")){
-                                double num = operator.peek();
+                                BigDecimal num = operator.peek();
                                 int decimalCount = 0;
                                 operator.pop();
                                 i++;
                                 while (i < arr.length && isNumber(arr[i])){
-                                    num = (num * 10) + Integer.valueOf(arr[i]);
+                                    num = num.multiply(BigDecimal.valueOf(10));
+                                    num = num.add(BigDecimal.valueOf(Integer.valueOf(arr[i])));
                                     i++;
                                     decimalCount++;
                                 }
                                 i--;
                                 System.out.println("i: " + i);
                                 System.out.println("num1: " + num);
-                                operator.push(num / Math.pow(10, decimalCount));
+                                num = num.divide(BigDecimal.valueOf(Math.pow(10, decimalCount)));
+                                operator.push(num);
                                 System.out.println("peek: " + operator.peek());
-//                                operator.push(num);
-//                                System.out.println(Math.pow(10, decimalCount));
-//                                operator.push(Math.pow(10, decimalCount));
-//                                operand.push("/");
                             }
                             else {
                                 while (!operand.isEmpty() && checkPriority(operand.peek()) >= checkPriority(arr[i])){
-                                    double val2 = operator.peek();
+                                    BigDecimal val2 = operator.peek();
                                     operator.pop();
 
-                                    double val1 = operator.peek();
+                                    BigDecimal val1 = operator.peek();
                                     operator.pop();
 
                                     String oper = operand.peek();
@@ -433,10 +435,10 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     while (!operand.isEmpty()){
-                        double val2 = operator.peek();
+                        BigDecimal val2 = operator.peek();
                         operator.pop();
 
-                        double val1 = operator.peek();
+                        BigDecimal val1 = operator.peek();
                         operator.pop();
 
                         String oper = operand.peek();
@@ -444,16 +446,12 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println("Computed: " + compute(val1, val2, oper));
 
                         operator.push(compute(val1, val2, oper));
-
                     }
-
                     if (!operator.isEmpty()){
                         TvAnswer.setText(operator.peek().toString());
                     }
                 }
             }
         });
-
-
     }
 }
