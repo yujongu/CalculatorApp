@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +24,43 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean hasDecimal = false;
     final String[] operands = {"+", "-", "*", "/", "^", "%"};
+
+    public int checkPriority(String operand){
+        if (operand.equals(".")){
+            return 3;
+        } else if (operand.equals("*") || operand.equals("/")
+                || operand.equals("^") || operand.equals("%")){
+            return 2;
+        } else if (operand.equals("+") || operand.equals("-")){
+            return 1;
+        }
+        return 0;
+    }
+
+    public boolean isNumber(String str){
+        for (int i = 0; i < 9; i++){
+            if (str.equals(Integer.toString(i))){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public double compute(double a, double b, String oper){
+        double ans = 0;
+        if (oper.equals("+")){
+            ans = a + b;
+        } else if (oper.equals("-")){
+            ans = a - b;
+        } else if (oper.equals("*")){
+            ans = a * b;
+        } else if (oper.equals("/")){
+            ans = a / b;
+        } else if (oper.equals("^")){
+            ans = (int) Math.pow(a, b);
+        }
+        return ans;
+    }
 
 
     public boolean endsWithOperand(String str){
@@ -332,11 +370,87 @@ public class MainActivity extends AppCompatActivity {
         equalsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Stack<Integer> operand = new Stack();
-                Stack<Integer> operator = new Stack();
-
                 String eq = TvEquation.getText().toString();
 
+                if (endsWithOperand(eq)) {
+                    Toast.makeText(MainActivity.this, "The equation is incomplete", Toast.LENGTH_SHORT).show();
+                } else {
+                    Stack<String> operand = new Stack();
+                    Stack<Double> operator = new Stack();
+
+                    String[] arr = new String[eq.length()];
+                    arr = eq.split("");
+
+                    System.out.println("ArrayLength: " + arr.length);
+
+                    if (eq.length() != 0){
+                        for (int i = 1; i < arr.length; i++){
+
+                            if (isNumber(arr[i])){
+                                double num = 0;
+                                while (i < arr.length && isNumber(arr[i])){
+                                    num = (num * 10) + Integer.valueOf(arr[i]);
+                                    i++;
+                                }
+                                i--;
+                                operator.push(num);
+                                System.out.println("num: " + num);
+                            } else if (arr[i].equals(".")){
+                                double num = operator.peek();
+                                int decimalCount = 0;
+                                operator.pop();
+                                i++;
+                                while (i < arr.length && isNumber(arr[i])){
+                                    num = (num * 10) + Integer.valueOf(arr[i]);
+                                    i++;
+                                    decimalCount++;
+                                }
+                                i--;
+                                System.out.println("i: " + i);
+                                System.out.println("num1: " + num);
+                                operator.push(num / Math.pow(10, decimalCount));
+                                System.out.println("peek: " + operator.peek());
+//                                operator.push(num);
+//                                System.out.println(Math.pow(10, decimalCount));
+//                                operator.push(Math.pow(10, decimalCount));
+//                                operand.push("/");
+                            }
+                            else {
+                                while (!operand.isEmpty() && checkPriority(operand.peek()) >= checkPriority(arr[i])){
+                                    double val2 = operator.peek();
+                                    operator.pop();
+
+                                    double val1 = operator.peek();
+                                    operator.pop();
+
+                                    String oper = operand.peek();
+                                    operand.pop();
+                                    operator.push(compute(val1, val2, oper));
+                                }
+                                operand.push(arr[i]);
+                            }
+                        }
+                    }
+
+                    while (!operand.isEmpty()){
+                        double val2 = operator.peek();
+                        operator.pop();
+
+                        double val1 = operator.peek();
+                        operator.pop();
+
+                        String oper = operand.peek();
+                        operand.pop();
+                        System.out.println("Computed: " + compute(val1, val2, oper));
+
+                        operator.push(compute(val1, val2, oper));
+
+                    }
+
+                    if (!operator.isEmpty()){
+                        TvAnswer.setText(operator.peek().toString());
+                    }
+                }
             }
         });
 
